@@ -137,10 +137,10 @@ cell_percent_wide <- cell_percent_summary %>%
 
 cell_percent_wide <- cell_percent_wide %>%
   mutate(
-    FoldChange = log2(mean_percent_Case / mean_percent_Control),
+    FoldChange = log2(mean_percent_case / mean_percent_control),
     cluster = seurat_clusters,
-    "Control_%_cells" = paste0(mean_percent_Control, " ± ", sd_percent_Control),
-    "Case_%_cells" = paste0(mean_percent_Case, " ± ", sd_percent_Case)
+    "Control_%_cells" = paste0(mean_percent_control, " ± ", sd_percent_control),
+    "Case_%_cells" = paste0(mean_percent_case, " ± ", sd_percent_case)
   ) %>% select(cluster,"Control_%_cells","Case_%_cells",FoldChange)
 
 DE_summary = left_join(DE_summary, cell_percent_wide, by = "cluster")
