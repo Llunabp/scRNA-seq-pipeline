@@ -11,6 +11,7 @@ log_info("Reading combined reduction RDS file")
 combined2 = readRDS(snakemake@input$rds)
 
 log_info("Finding markers for heatmap")
+set.seed(snakemake@params[["seed"]])
 markers <- FindAllMarkers(
   combined2,
   only.pos = TRUE,

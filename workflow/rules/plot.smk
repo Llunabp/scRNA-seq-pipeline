@@ -20,6 +20,7 @@ rule plot_heatmap:
         n_markers = config["HEATMAP"]["N_MARKERS"],
         logfc_threshold = config["MARKERS"]["LOGFC_THRESHOLD"], 
         min_pct = config["MARKERS"]["MIN_PCT"],
+        seed = config["SEED"]
     input:
         rds = OUTDIR / "combined_reduction.rds"
     output:

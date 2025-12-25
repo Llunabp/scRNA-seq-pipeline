@@ -35,3 +35,4 @@ CONTROLS:
     barcodes: "data/GSE128033_RAW/GSM3660644_SC45NOR_barcodes.tsv"
 
 OUTPUT_DIRECTORY: "output"
+GENE_SET_FILE: "data/emphysema127.txt"
