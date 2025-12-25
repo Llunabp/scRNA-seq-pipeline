@@ -24,3 +24,26 @@ rule load_counts:
         LOGDIR / "load_counts" / "log.txt"
     script:
         "../scripts/read_data.R"
+
+rule reduce_data:
+    conda:
+        "../envs/r_env.yaml"
+    params:
+        npcs = config["PCA"]["N_PCS"],
+        resolution = config["CLUSTERING"]["RESOLUTION"],
+        algorithm = config["CLUSTERING"]["ALGORITHM"],
+        n_neighbors = config["UMAP"]["N_NEIGHBORS"],
+        min_dist = config["UMAP"]["MIN_DIST"],
+        min_pct = config["MARKERS"]["MIN_PCT"],
+        logfc_threshold = config["MARKERS"]["LOGFC_THRESHOLD"],
+        seed = config["SEED"],
+    input:
+        rds = OUTDIR / "combined.rds"
+    output:
+        reduction = OUTDIR / "combined_reduction.rds",
+        markers = OUTDIR / "genes.csv",
+        elbowplot = REPORT_DIR_PLOTS / "elbow_plot.png"
+    log:
+        LOGDIR / "reduce_data" / "log.txt"
+    script:
+        "../scripts/reduce_data.R"
