@@ -1,0 +1,16 @@
+from pathlib import Path
+
+configfile: "config/config.yaml"
+configfile: "config/targets.yaml"
+
+
+OUTDIR = Path(config["OUTPUT_DIRECTORY"])
+LOGDIR = OUTDIR / "logs"
+REPORT_DIR_PLOTS = Path(OUTDIR / "report/plots")
+REPORT_DIR_TABLES = Path(OUTDIR / "report/tables")
+
+rule all:
+    input:
+        OUTDIR / "combined.rds",
+
+include: "rules/preproces.smk",

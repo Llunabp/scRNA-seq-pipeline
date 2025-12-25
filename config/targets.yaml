@@ -1,0 +1,37 @@
+GEO_ACCESION:
+  Cases: "GSE167295"
+  Controls: "GSE128033"
+
+CASES:
+  SC167:
+    mtx: "data/GSE167295_RAW/GSM5100998_SC167matrix.mtx"
+    genes: "data/GSE167295_RAW/GSM5100998_SC167genes.tsv"
+    barcodes: "data/GSE167295_RAW/GSM5100998_SC167barcodes.tsv"
+
+  SC170:
+    mtx: "data/GSE167295_RAW/GSM5100999_SC170matrix.mtx"
+    genes: "data/GSE167295_RAW/GSM5100999_SC170genes.tsv"
+    barcodes: "data/GSE167295_RAW/GSM5100999_SC170barcodes.tsv"
+
+  SC200:
+    mtx: "data/GSE167295_RAW/GSM5101000_SC200matrix.mtx"
+    genes: "data/GSE167295_RAW/GSM5101000_SC200genes.tsv"
+    barcodes: "data/GSE167295_RAW/GSM5101000_SC200barcodes.tsv"
+
+CONTROLS:
+  SC14NOR:
+    mtx: "data/GSE128033_RAW/GSM3660641_SC14NOR_matrix.mtx"
+    genes: "data/GSE128033_RAW/GSM3660641_SC14NOR_genes.tsv"
+    barcodes: "data/GSE128033_RAW/GSM3660641_SC14NOR_barcodes.tsv"
+
+  SC31NOR:
+    mtx: "data/GSE128033_RAW/GSM3660642_SC31NOR_matrix.mtx"
+    genes: "data/GSE128033_RAW/GSM3660642_SC31NOR_genes.tsv"
+    barcodes: "data/GSE128033_RAW/GSM3660642_SC31NOR_barcodes.tsv"
+
+  SC45NOR:
+    mtx: "data/GSE128033_RAW/GSM3660644_SC45NOR_matrix.mtx"
+    genes: "data/GSE128033_RAW/GSM3660644_SC45NOR_genes.tsv"
+    barcodes: "data/GSE128033_RAW/GSM3660644_SC45NOR_barcodes.tsv"
+
+OUTPUT_DIRECTORY: "output"
