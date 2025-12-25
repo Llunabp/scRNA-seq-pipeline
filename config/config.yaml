@@ -17,3 +17,13 @@ MARKERS:
   LOGFC_THRESHOLD: 0.25
   MIN_PCT: 0.25
 SEED: 123
+DIM_REPRESENTATION: 
+  REDUCTION_METHOD: 
+    - "umap"
+    - "tsne"
+  LEGEND:
+    - "long_name"
+    - "group"
+    - "orig.ident"
+HEATMAP:
+  N_MARKERS: 5

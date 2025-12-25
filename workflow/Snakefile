@@ -11,6 +11,9 @@ REPORT_DIR_TABLES = Path(OUTDIR / "report/tables")
 
 rule all:
     input:
-        OUTDIR / "combined_reduction.rds",
+        expand(REPORT_DIR_PLOTS / "dim_plot.{reduction}.{legend}.png" reduction=config["DIM_PLOT"]["REDUCTIONS"], legend=config["DIM_PLOT"]["LEGENDS"]),
+        REPORT_DIR_PLOTS / "heatmap.png",
+        REPORT_DIR_PLOTS / "feature_plot.png",
 
 include: "rules/preproces.smk",
+include: "rules/plot.smk",
