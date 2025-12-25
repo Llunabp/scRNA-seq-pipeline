@@ -78,8 +78,8 @@ for (cl in clusters) {
   
   de <- FindMarkers(
     combined2,
-    ident.1 = "Case",
-    ident.2 = "Control",
+    ident.1 = "case",
+    ident.2 = "control",
     group.by = "group",
     subset.ident = cl,
     test.use = "wilcox",
@@ -150,15 +150,15 @@ pvals_cluster <- cell_percent_sample %>%
   summarise(
     p_ttest = tryCatch(
       t.test(
-        percent[group == "Case"],
-        percent[group == "Control"]
+        percent[group == "case"],
+        percent[group == "control"]
       )$p.value,
       error = function(e) NA
     ),
     p_wilcox = tryCatch(
       wilcox.test(
-        percent[group == "Case"],
-        percent[group == "Control"]
+        percent[group == "case"],
+        percent[group == "control"]
       )$p.value,
       error = function(e) NA
     ),

@@ -36,3 +36,4 @@ CONTROLS:
 
 OUTPUT_DIRECTORY: "output"
 GENE_SET_FILE: "data/emphysema127.txt"
+MARKERS_CELLS: "data/markers_cells.csv"

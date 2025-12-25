@@ -47,3 +47,16 @@ rule reduce_data:
         LOGDIR / "reduce_data" / "log.txt"
     script:
         "../scripts/reduce_data.R"
+
+rule annotated_genes:
+    conda:
+        "../envs/r_env.yaml"
+    input:
+        genes = OUTDIR / "genes.csv",
+        markers = config["MARKERS_CELLS"]
+    output:
+        annotated_genes = REPORT_DIR_TABLES / "annotated_genes.csv"
+    log:
+        LOGDIR / "annotate_genes" / "log.txt"
+    script:
+        "../scripts/annotate_genes.R"

@@ -15,7 +15,8 @@ rule all:
         REPORT_DIR_PLOTS / "heatmap.png",
         REPORT_DIR_PLOTS / "feature_plot.png",
         REPORT_DIR_TABLES / "DE_summary.csv",
-        REPORT_DIR_TABLES / "GSEA_results.csv"
+        REPORT_DIR_TABLES / "GSEA_results.csv",
+        REPORT_DIR_TABLES / "annotated_genes.csv"
 
 include: "rules/preproces.smk",
 include: "rules/plot.smk",
