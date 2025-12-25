@@ -7,9 +7,9 @@ rule dim_plot:
     input:
         rds = OUTDIR / "combined_reduction.rds"
     output:
-        dimplot = REPORT_DIR_PLOTS / "dim_plot_{reduction}_{legend}.png"
+        dimplot = REPORT_DIR_PLOTS / "{reduction}" / "dim_plot_{legend}.png"
     log:
-        LOGDIR / "dim_plot" / "log_{reduction}_{legend}.txt"
+        LOGDIR / "dim_plot_{reduction}" / "log_{legend}.txt"
     script:
         "../scripts/plot_dim.R"
 
