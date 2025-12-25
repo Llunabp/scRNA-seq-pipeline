@@ -7,11 +7,11 @@ rule dim_plot:
     input:
         rds = OUTDIR / "combined_reduction.rds"
     output:
-        dimplot = REPORT_DIR_PLOTS / "dim_plot.{reduction}.{legend}.png"
+        dimplot = REPORT_DIR_PLOTS / "dim_plot_{reduction}_{legend}.png"
     log:
-        LOGDIR / "dim_plot" / "log.{reduction}.{legend}.txt"
+        LOGDIR / "dim_plot" / "log_{reduction}_{legend}.txt"
     script:
-        "../scripts/dim_plot.R"
+        "../scripts/plot_dim.R"
 
 rule plot_heatmap:
     conda:
