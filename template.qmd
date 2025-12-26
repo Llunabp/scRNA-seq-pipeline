@@ -1,17 +1,18 @@
 ---
-title: "Final results report"
+title: "FINAL RESULTS REPORT"
 date: last-modified
 date-format: "YYYY-MM-DD"
 title-block-banner: true
+css: "config/report.styles.css"
 format:
   html:
-    page-layout: article
+    page-layout: full
     embed-resources: true
     smooth-scroll: true
     theme: cosmo
     toc: true
     toc-expand: true
-    toc-location: left
+    toc-location: right
     toc-title: Summary
     number-sections: true
 editor: source
@@ -38,14 +39,14 @@ output-file: report.html
 ---
 
 
-```{r libraries-load, include = F}
+```{r libraries-load, include = F,warning = F}
 library(DT)
 library(tidyverse)
 ```
 
 ## Annotated Markers 
 
-```{r tbl-genes, echo = F,message = F}
+```{r tbl-genes, echo = F,message = F, warning = F}
 #| tbl-cap: Target dataset summary
 
 table <- read.csv(params$annotated_genes) %>%
@@ -58,7 +59,7 @@ table <- read.csv(params$annotated_genes) %>%
 DT::datatable(table, rownames = FALSE)
 ```
 
-```{r DE, echo = F,message = F}
+```{r DE, echo = F,message = F,warning = F}
 #| tbl-cap: Target dataset summary
 
 table <- read.csv(params$de_summary) %>%
@@ -73,7 +74,7 @@ table <- read.csv(params$de_summary) %>%
 DT::datatable(table, rownames = FALSE)
 ```
 
-```{r GSEA, echo = F,message = F}
+```{r GSEA, echo = F,message = F,warning = F}
 #| tbl-cap: Target dataset summary
 
 table <- read.csv(params$gsea_table)  %>%
@@ -103,7 +104,7 @@ for (a in a_vals) {
 
     
 
-    cat("![`r path`](`r path`){width=80%}\n\n")
+    cat("![path](", path, "){width=80%}\n\n")
   }
 
   cat(":::\n\n")
