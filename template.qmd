@@ -61,7 +61,7 @@ DT::datatable(table, rownames = FALSE)
 ```{r DE, echo = F,message = F}
 #| tbl-cap: Target dataset summary
 
-table <- read.csv("tables/de_summary.csv") %>%
+table <- read.csv(params$de_summary) %>%
   rename(
     "% Case cells" = Case_._cells,
     "% Control cells" = Control_._cells,
@@ -76,7 +76,7 @@ DT::datatable(table, rownames = FALSE)
 ```{r GSEA, echo = F,message = F}
 #| tbl-cap: Target dataset summary
 
-table <- read.csv("tables/GSEA_results.csv")  %>%
+table <- read.csv(params$gsea_table)  %>%
   mutate(across(where(is.numeric), round, 2)) %>%
   select(!cluster)
 
@@ -85,8 +85,8 @@ DT::datatable(table, rownames = FALSE)
 
 ```{r dim_plots, results="asis"}
 
-a_vals <- unlist(strsplit(reductions,";")
-b_vals <- unlist(strsplit(legends,";")
+a_vals <- unlist(strsplit(params$reductions,";"))
+b_vals <- unlist(strsplit(params$legends,";"))
 
 for (a in a_vals) {
 

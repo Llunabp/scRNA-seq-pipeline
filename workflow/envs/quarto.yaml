@@ -3,8 +3,8 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - r-base==4.5.2
+  - r-base==4.3.1
   - quarto>=1.5.50       
   - r-quarto==1.2
-  - r-DT
+  - r-DT==0.34.0
   - r-tidyverse==2.0.0
