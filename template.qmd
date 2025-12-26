@@ -84,7 +84,7 @@ table <- read.csv(params$gsea_table)  %>%
 DT::datatable(table, rownames = FALSE)
 ```
 
-```{r dim_plots, results="asis", include = F}
+```{r dim_plots, results="asis", echo = F}
 
 a_vals <- unlist(strsplit(params$reductions,";"))
 b_vals <- unlist(strsplit(params$legends,";"))
@@ -99,7 +99,7 @@ for (a in a_vals) {
     cat("### ", b, "\n\n")
 
     path <- params$dim_plot_path
-    path <- gsub("\\(reduciton\\)", a, path)
+    path <- gsub("\\(reduction\\)", a, path)
     path <- gsub("\\(legend\\)", b, path)
 
     
