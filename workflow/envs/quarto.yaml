@@ -1,7 +1,10 @@
 channels:
   - conda-forge
+  - bioconda
+  - defaults
 dependencies:
   - r-base==4.5.2
+  - quarto>=1.5.50       
+  - r-quarto==1.2
   - r-DT
-  - quarto==1.8.25
   - r-tidyverse==2.0.0
