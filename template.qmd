@@ -1,0 +1,127 @@
+---
+title: "Final results report"
+date: last-modified
+date-format: "YYYY-MM-DD"
+title-block-banner: true
+format:
+  html:
+    page-layout: article
+    embed-resources: true
+    smooth-scroll: true
+    theme: cosmo
+    toc: true
+    toc-expand: true
+    toc-location: left
+    toc-title: Summary
+    number-sections: true
+editor: source
+params:
+  heatmap: ""
+  feature_plot: ""
+  de_summary: ""
+  gsea_table: ""
+  annotated_genes: ""
+  legends: ""
+  reductions: ""
+  dim_plot_path: ""
+  gsea_pval: 0.0
+  gsea_mingenes: 0 
+  de_fdr: 0.0
+  de_fc: 0.0
+  sc_min_cells: 0
+  sc_min_features: 0
+  sc_scale_factor: 0
+  sc_normalization_method: ""
+  sc_selection_method: ""
+  sc_nfeatures: 0
+output-file: report.html
+---
+
+
+```{r libraries-load, include = F}
+library(DT)
+library(tidyverse)
+```
+
+## Annotated Markers 
+
+```{r tbl-genes, echo = F,message = F}
+#| tbl-cap: Target dataset summary
+
+table <- read.csv(params$annotated_genes) %>%
+  rename(
+    Cluster = cluster,
+    Marker = marker,
+    "Associated Cells Types" = cells
+  ) 
+
+DT::datatable(table, rownames = FALSE)
+```
+
+```{r DE, echo = F,message = F}
+#| tbl-cap: Target dataset summary
+
+table <- read.csv("tables/de_summary.csv") %>%
+  rename(
+    "% Case cells" = Case_._cells,
+    "% Control cells" = Control_._cells,
+    "P.value (t.test)" = P.value..t.test.,
+    "P.value (wilcox)" = P.value..wilcox.
+    
+  ) 
+
+DT::datatable(table, rownames = FALSE)
+```
+
+```{r GSEA, echo = F,message = F}
+#| tbl-cap: Target dataset summary
+
+table <- read.csv("tables/GSEA_results.csv")  %>%
+  mutate(across(where(is.numeric), round, 2)) %>%
+  select(!cluster)
+
+DT::datatable(table, rownames = FALSE)
+```
+
+```{r dim_plots, results="asis"}
+
+a_vals <- unlist(strsplit(reductions,";")
+b_vals <- unlist(strsplit(legends,";")
+
+for (a in a_vals) {
+
+  cat("## Reduction:", a, "\n\n")
+  cat("::: {.panel-tabset}\n\n")
+
+  for (b in b_vals) {
+
+    cat("### ", b, "\n\n")
+
+    path <- dim_plot_path
+    path <- gsub("\\(reduciton\\)", a, path)
+    path <- gsub("\\(legend\\)", b, path)
+
+    cat("![](", path, "){width=80%}\n\n")
+  }
+
+  cat(":::\n\n")
+}
+```
+
+## Plots
+
+### Heatmap
+
+The lineage admixture for each sample has been estimated
+using [Freyja](https://github.com/andersen-lab/Freyja) (@fig-heatmap).
+
+![Estimated lineage admixture of each sample.
+Samples in the X-axis are ordered chronologically, from more ancient to newer.](`r params$heatmap`){#fig-heatmap}
+
+### Features plot
+
+The lineage admixture for each sample has been estimated
+using (@fig-feature_plot).
+
+![Estimated lineage admixture of each sample.
+Samples in the X-axis are ordered chronologically, from more ancient to newer.](`r params$feature_plot`){#fig-feature_plot}

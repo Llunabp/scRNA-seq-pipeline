@@ -49,8 +49,8 @@ run_gsea_cluster <- function(
     cluster = cluster_name,
     ES = gsea@result$enrichmentScore,
     NES = gsea@result$NES,
-    NOM_pval = gsea@result$pvalue,
-    FDR_qval = gsea@result$p.adjust
+    P.value = gsea@result$pvalue,
+    FDR = gsea@result$p.adjust
   )
 }
 
@@ -200,5 +200,6 @@ for (cl in names(DE_by_cluster)) {
 GSEA_table = data.frame(cluster = clusters)
 GSEA_table = left_join(GSEA_table, a, by = "cluster")
 
-GSEA_table <- left_join(GSEA_table,bind_rows(GSEA_list))
+GSEA_table <- left_join(GSEA_table,bind_rows(GSEA_list)) %>%
+
 write.csv(GSEA_table, snakemake@output[["gsea_table"]], row.names = FALSE)

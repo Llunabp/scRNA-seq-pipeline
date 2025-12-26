@@ -9,15 +9,25 @@ LOGDIR = OUTDIR / "logs"
 REPORT_DIR_PLOTS = Path(OUTDIR / "report/plots")
 REPORT_DIR_TABLES = Path(OUTDIR / "report/tables")
 
+LEGENDS = ";".join(list(config.get("DIM_REPRESENTATION", {}).get("LEGEND", [])))
+REDUCTIONS = ";".join(list(config.get("DIM_REPRESENTATION", {}).get("REDUCTION_METHOD", [])))
+FILE_DIM = REPORT_DIR_PLOTS / "(reduction)" / "dim_plot_(legend).png"
+
 rule all:
     input:
+        OUTDIR / "config.json",
+        OUTDIR / "checks_legend.done",
+        OUTDIR / "checks_reduction.done",
         expand(REPORT_DIR_PLOTS / "{reduction}" / "dim_plot_{legend}.png", reduction=config["DIM_REPRESENTATION"]["REDUCTION_METHOD"], legend=config["DIM_REPRESENTATION"]["LEGEND"]),
         REPORT_DIR_PLOTS / "heatmap.png",
         REPORT_DIR_PLOTS / "feature_plot.png",
         REPORT_DIR_TABLES / "DE_summary.csv",
         REPORT_DIR_TABLES / "GSEA_results.csv",
-        REPORT_DIR_TABLES / "annotated_genes.csv"
+        REPORT_DIR_TABLES / "annotated_genes.csv",
+        OUTDIR / "report" / "report.html"
 
 include: "rules/preproces.smk",
 include: "rules/plot.smk",
 include: "rules/dif_expression.smk",
+include: "rules/report.smk",
+include: "rules/checks.smk"
