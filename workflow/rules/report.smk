@@ -27,7 +27,7 @@ rule report:
         gsea_table = REPORT_DIR_TABLES / "GSEA_results.csv",
         annotated_genes = REPORT_DIR_TABLES / "annotated_genes.csv",
     output:
-        OUTDIR / "report" / "report.html"
+        html = OUTDIR / "report" / "report.html"
     log:
         LOGDIR / "report" / "log.txt"
     shell:
