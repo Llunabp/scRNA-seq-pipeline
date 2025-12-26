@@ -14,7 +14,7 @@ rule check_legend:
     conda:
         "../envs/r_env.yaml"
     params:
-        possibilities = ["long_name", "seurat_clusters", "group", "orig.ident"]
+        possibilities = ["long_name", "seurat_clusters", "group", "orig.ident"],
         legends = LEGENDS
     output:
         touch(OUTDIR / "checks_legend.done")
@@ -29,7 +29,7 @@ rule check_reduction:
     conda:
         "../envs/r_env.yaml"
     params:
-        possibilities = ["umap", "tsne", "pca"]
+        possibilities = ["umap", "tsne", "pca"],
         reductions = REDUCTIONS
     output:
         touch(OUTDIR / "checks_reduction.done")

@@ -8,7 +8,7 @@ rule report:
         case = config["GEO_ACCESION"]["Cases"],
         control = config["GEO_ACCESION"]["Controls"],
         gsea_pval = config["GSEA"]["PVALUE"],
-        gsea_mingenes = config["GSEA"]["MIN_GENES"]
+        gsea_mingenes = config["GSEA"]["MIN_GENES"],
         de_fdr = config["DE"]["FDR"],
         de_fc = config["DE"]["FC"],
         sc_min_cells = config["READ_DATA"]["MIN_CELLS_PER_GENE"],
