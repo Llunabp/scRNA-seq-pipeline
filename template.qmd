@@ -97,7 +97,7 @@ for (a in a_vals) {
 
     cat("### ", b, "\n\n")
 
-    path <- dim_plot_path
+    path <- params$dim_plot_path
     path <- gsub("\\(reduciton\\)", a, path)
     path <- gsub("\\(legend\\)", b, path)
 
