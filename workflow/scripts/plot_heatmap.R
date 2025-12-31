@@ -34,6 +34,6 @@ log_info("Save plot")
 ggsave(
   filename = snakemake@output[["heatmap"]],
   plot = p,
-  width = 10,
-  height = 8
+  width = length(unique(markers$cluster)),
+  height = snakemake@params[["n_markers"]] * 2,
 )
