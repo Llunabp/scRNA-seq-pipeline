@@ -206,7 +206,7 @@ GSEA_table = left_join(GSEA_table, a, by = "cluster")
 GSEA_table = left_join(GSEA_table,bind_rows(GSEA_list))
 GSEA_table = GSEA_table %>%
   mutate(
-    passes_filter = ifelse(NOM_pval < snakemake@params[["pvalue_cutoff"]] & FDR_qval < snakemake@params[["FDR_cutoff"]], "Yes", "No")
+    passes_filter = ifelse(P.value < snakemake@params[["pvalue_cutoff"]] & FDR < snakemake@params[["FDR_cutoff"]], "Yes", "No")
   )
 
 
