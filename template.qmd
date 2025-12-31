@@ -52,7 +52,7 @@ library(tidyverse)
 ```{r tbl-summary, echo = F,message = F, warning = F}
 #| tbl-cap: Target dataset summary
 
-table <- read.csv(params$cell_counts) %>%
+table <- read.csv(params$cell_counts)
 
 DT::datatable(table)
 ```
