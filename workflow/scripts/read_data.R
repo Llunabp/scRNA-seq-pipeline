@@ -100,11 +100,13 @@ combined <- IntegrateData(anchors)
 log_info("Get number of cells")
 total_cells <- ncol(combined)
 
-cell_summary <- combined@meta.data %>%
-  distinct(orig.ident, group) %>%
-  count(orig.ident, group, name = "n_cells") %>%
+a = data.frame(table(combined@meta.data$orig.ident))
+colnames(a) = c("orig.ident","n_cell")
+cell_summary = left_join(a,unique(combined@meta.data[,c("orig.ident","group")]))
+
+cell_summary <- cell_summary %>%
   mutate(
-    percent_total = round(n_cells / total_cells * 100, 2),
+    percent_total = round(n_cell / total_cells * 100, 2),
     total_cells = total_cells
   ) %>%
   rename(
