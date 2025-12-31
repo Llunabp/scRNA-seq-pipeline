@@ -4,8 +4,11 @@ rule dif_expression:
     params:
         min_genes = config["GSEA"]["MIN_GENES"],
         pvalue_cutoff = config["GSEA"]["PVALUE"],
+        FDR_cutoff = config["GSEA"]["FDR"],
+        GSEA_padj_method = config["GSEA"]["P_ADJ_METHOD"],
         logfc_threshold = config["MARKERS"]["LOGFC_THRESHOLD"],
         min_pct = config["MARKERS"]["MIN_PCT"],
+        test_use = config["MARKERS"]["TEST"],
         FDR = config["DE"]["FDR"],
         FC = config["DE"]["FC"],
         seed = config["SEED"]

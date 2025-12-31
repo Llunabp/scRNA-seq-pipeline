@@ -8,6 +8,8 @@ rule report:
         case = config["GEO_ACCESION"]["Cases"],
         control = config["GEO_ACCESION"]["Controls"],
         gsea_pval = config["GSEA"]["PVALUE"],
+        gsea_fdr = config["GSEA"]["FDR"],
+        gsea_padj_method = config["GSEA"]["P_ADJ_METHOD"],
         gsea_mingenes = config["GSEA"]["MIN_GENES"],
         de_fdr = config["DE"]["FDR"],
         de_fc = config["DE"]["FC"],
@@ -26,6 +28,7 @@ rule report:
         de_summary = REPORT_DIR_TABLES / "DE_summary.csv",
         gsea_table = REPORT_DIR_TABLES / "GSEA_results.csv",
         annotated_genes = REPORT_DIR_TABLES / "annotated_genes.csv",
+        cell_counts = REPORT_DIR_TABLES / "cell_counts.csv",
     output:
         html = OUTDIR / "report" / "report.html"
     log:
@@ -41,10 +44,13 @@ rule report:
                     "de_summary='{input.de_summary}', "
                     "gsea_table='{input.gsea_table}', "
                     "annotated_genes='{input.annotated_genes}', "
+                    "cell_counts='{input.cell_counts}', "
                     "legends='{params.legends}', "
                     "reductions='{params.reductions}', "
                     "dim_plot_path='{params.dim_plot_path}', "
                     "gsea_pval='{params.gsea_pval}', "
+                    "gsea_fdr='{params.gsea_fdr}', "
+                    "gsea_padj_method='{params.gsea_padj_method}', "
                     "gsea_mingenes='{params.gsea_mingenes}', "
                     "de_fdr='{params.de_fdr}', "
                     "de_fc='{params.de_fc}', "

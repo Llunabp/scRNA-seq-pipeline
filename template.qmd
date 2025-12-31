@@ -18,6 +18,7 @@ format:
 editor: source
 params:
   heatmap: ""
+  cell_counts: ""
   feature_plot: ""
   de_summary: ""
   gsea_table: ""
@@ -26,6 +27,8 @@ params:
   reductions: ""
   dim_plot_path: ""
   gsea_pval: 0.0
+  gsea_fdr: 0.0
+  gsea_padj_method: ""
   gsea_mingenes: 0 
   de_fdr: 0.0
   de_fc: 0.0
@@ -42,6 +45,16 @@ output-file: report.html
 ```{r libraries-load, include = F,warning = F}
 library(DT)
 library(tidyverse)
+```
+
+## Summary table
+
+```{r tbl-summary, echo = F,message = F, warning = F}
+#| tbl-cap: Target dataset summary
+
+table <- read.csv(params$cell_counts) %>%
+
+DT::datatable(table)
 ```
 
 ## Annotated Markers 

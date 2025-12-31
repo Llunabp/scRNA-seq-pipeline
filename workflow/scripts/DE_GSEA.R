@@ -13,6 +13,7 @@ log <- file(snakemake@log[[1]], open = "wt")
 sink(log, type = "message")
 sink(log, type = "output")
 set.seed(snakemake@params[["seed"]])
+
 run_gsea_cluster <- function(
     de_table,        
     cluster_name,    
@@ -36,8 +37,10 @@ run_gsea_cluster <- function(
         term = "Signature_genes",
         gene = gene_set
       ),
-      pvalueCutoff = snakemake@params[["pvalue_cutoff"]],
-      verbose = FALSE
+      pvalueCutoff = 1,
+      verbose = FALSE,
+      pAdjustMethod = snakemake@params[["GSEA_padj_method"]],
+      seed = snakemake@params[["seed"]]
     ),
     error = function(e) NULL
   )
@@ -82,7 +85,7 @@ for (cl in clusters) {
     ident.2 = "control",
     group.by = "group",
     subset.ident = cl,
-    test.use = "wilcox",
+    test.use = snakemake@params[["test_use"]],
     logfc.threshold = snakemake@params[["logfc_threshold"]],
     min.pct = snakemake@params[["min_pct"]]
   )
@@ -200,6 +203,11 @@ for (cl in names(DE_by_cluster)) {
 GSEA_table = data.frame(cluster = clusters)
 GSEA_table = left_join(GSEA_table, a, by = "cluster")
 
-GSEA_table <- left_join(GSEA_table,bind_rows(GSEA_list))
+GSEA_table = left_join(GSEA_table,bind_rows(GSEA_list))
+GSEA_table = GSEA_table %>%
+  mutate(
+    passes_filter = ifelse(NOM_pval < snakemake@params[["pvalue_cutoff"]] & FDR_qval < snakemake@params[["FDR_cutoff"]], "Yes", "No")
+  )
+
 
 write.csv(GSEA_table, snakemake@output[["gsea_table"]], row.names = FALSE)

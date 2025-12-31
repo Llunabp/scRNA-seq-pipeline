@@ -54,7 +54,8 @@ markers <- FindAllMarkers(
   combined2,
   only.pos = TRUE,
   min.pct = snakemake@params[["min_pct"]],
-  logfc.threshold = snakemake@params[["logfc_threshold"]]
+  logfc.threshold = snakemake@params[["logfc_threshold"]],
+  test.use = snakemake@params[["test_use"]]
 )
 
 labels <- markers %>% 
