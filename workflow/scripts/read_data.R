@@ -113,7 +113,7 @@ cell_summary <- combined@meta.data %>%
 
 log_info("Save cell summary")
 write.csv(
-  cells_per_sample,
+  cell_summary,
   snakemake@output[["cell_counts"]],
   row.names = FALSE
 )
