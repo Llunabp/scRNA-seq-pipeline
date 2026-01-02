@@ -19,6 +19,9 @@ editor: source
 params:
   heatmap: ""
   cell_counts: ""
+  violin_counts: ""
+  violin_features: ""
+  HGVs_plot: ""
   feature_plot: ""
   de_summary: ""
   gsea_table: ""

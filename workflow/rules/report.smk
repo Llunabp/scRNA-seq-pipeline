@@ -29,6 +29,9 @@ rule report:
         gsea_table = REPORT_DIR_TABLES / "GSEA_results.csv",
         annotated_genes = REPORT_DIR_TABLES / "annotated_genes.csv",
         cell_counts = REPORT_DIR_TABLES / "cell_counts.csv",
+        violin_counts = REPORT_DIR_PLOTS / "violin_counts.png",
+        violin_features = REPORT_DIR_PLOTS / "violin_features.png",
+        HGVs_plot = REPORT_DIR_PLOTS / "HGVs_plot.png",
     output:
         html = OUTDIR / "report" / "report.html"
     log:
@@ -45,6 +48,9 @@ rule report:
                     "gsea_table='{input.gsea_table}', "
                     "annotated_genes='{input.annotated_genes}', "
                     "cell_counts='{input.cell_counts}', "
+                    "violin_features='{input.violin_features}', "
+                    "violin_counts='{input.violin_counts}', "
+                    "HGVs_plot='{input.HGVs_plot}', "
                     "legends='{params.legends}', "
                     "reductions='{params.reductions}', "
                     "dim_plot_path='{params.dim_plot_path}', "
