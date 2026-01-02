@@ -60,6 +60,7 @@ run_gsea_cluster <- function(
 log_info("Read RDS")
 combined2 = readRDS(snakemake@input$rds)
 clusters <- levels(Idents(combined2))
+DefaultAssay(combined2) <- "RNA"
 
 log_info("Define DE final table")
 a = combined2@meta.data %>% select(seurat_clusters,long_name) %>% unique() %>% 
