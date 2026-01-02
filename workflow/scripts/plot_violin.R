@@ -26,8 +26,8 @@ p1 = ggplot(df, aes(x = group, y = nFeature_RNA, fill = group)) +
   geom_violin(trim = FALSE, show.legend = FALSE) +
   theme_classic()
 
-p2 = log_info("Plot nCount")
-ggplot(df, aes(x = group, y = nCount_RNA, fill = group)) +
+log_info("Plot nCount")
+p2 = ggplot(df, aes(x = group, y = nCount_RNA, fill = group)) +
   geom_violin(trim = FALSE, show.legend = FALSE) +
   theme_classic()
 
