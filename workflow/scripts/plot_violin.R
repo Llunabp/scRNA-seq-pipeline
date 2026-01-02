@@ -31,9 +31,6 @@ ggplot(df, aes(x = group, y = nCount_RNA, fill = group)) +
   geom_violin(trim = FALSE, show.legend = FALSE) +
   theme_classic()
 
-p1 = VariableFeaturePlot(combined) 
-p2 = LabelPoints(plot = p1, points = top, repel = TRUE)
-
 log_info("Save plots")
 ggsave(snakemake@output$plot_feature,p1)
 ggsave(snakemake@output$plot_count,p2)
