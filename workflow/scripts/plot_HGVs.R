@@ -17,6 +17,7 @@ combined = readRDS(snakemake@input$rds)
 DefaultAssay(combined) = "RNA"
 
 log_info("Find top features")
+combined <- FindVariableFeatures(combined)
 top<- head(VariableFeatures(combined), snakemake@params$top_features)
 
 log_info("Plot most variable features")
