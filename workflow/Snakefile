@@ -19,6 +19,13 @@ rule all:
         OUTDIR / "config.json",
         OUTDIR / "checks_legend.done",
         OUTDIR / "checks_reduction.done",
+        expand(REPORT_DIR_PLOTS / "{reduction}" / "dim_plot_{legend}.png", reduction=config["DIM_REPRESENTATION"]["REDUCTION_METHOD"], legend=config["DIM_REPRESENTATION"]["LEGEND"]),
+        expand(REPORT_DIR_PLOTS / "feature_plot.png", reduction2=config["DIM_REPRESENTATION"]["REDUCTION_METHOD"]),
+        REPORT_DIR_PLOTS / "heatmap.png",
+        REPORT_DIR_PLOTS / "feature_plot.png",
+        REPORT_DIR_TABLES / "DE_summary.csv",
+        REPORT_DIR_TABLES / "GSEA_results.csv",
+        REPORT_DIR_TABLES / "annotated_genes.csv",
         OUTDIR / "report" / "report.html"
 
 include: "rules/preproces.smk",
