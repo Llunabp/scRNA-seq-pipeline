@@ -5,6 +5,7 @@ rule report:
         legends = LEGENDS,
         reductions = REDUCTIONS,
         dim_plot_path = FILE_DIM,
+        feature_plot_path = FILE_FEATURE,
         case = config["GEO_ACCESION"]["Cases"],
         control = config["GEO_ACCESION"]["Controls"],
         gsea_pval = config["GSEA"]["PVALUE"],
@@ -24,7 +25,7 @@ rule report:
         qmd = "template.qmd",
         dim_plots = expand(REPORT_DIR_PLOTS / "{reduction}" / "dim_plot_{legend}.png", reduction=config["DIM_REPRESENTATION"]["REDUCTION_METHOD"], legend=config["DIM_REPRESENTATION"]["LEGEND"]),
         heatmap = REPORT_DIR_PLOTS / "heatmap.png",
-        feature_plot = REPORT_DIR_PLOTS / "feature_plot.png",
+        feature_plot = expand(REPORT_DIR_PLOTS / "feature_plot.png", reduction2=config["DIM_REPRESENTATION"]["REDUCTION_METHOD"]),
         de_summary = REPORT_DIR_TABLES / "DE_summary.csv",
         gsea_table = REPORT_DIR_TABLES / "GSEA_results.csv",
         annotated_genes = REPORT_DIR_TABLES / "annotated_genes.csv",
@@ -43,7 +44,7 @@ rule report:
                 "input = '{input.qmd}', "
                 "execute_params=list("
                     "heatmap='{input.heatmap}', "
-                    "feature_plot='{input.feature_plot}', "
+                    "feature_plot_path='{params.feature_plot_path}', "
                     "de_summary='{input.de_summary}', "
                     "gsea_table='{input.gsea_table}', "
                     "annotated_genes='{input.annotated_genes}', "

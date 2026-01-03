@@ -33,13 +33,15 @@ rule plot_heatmap:
 rule plot_features_dim:
     conda:
         "../envs/r_env.yaml"
+    params: 
+        reduction = lambda wildcards: wildcards.reduction2,
     input:
         rds = OUTDIR / "combined_reduction.rds",
         genes = OUTDIR / "genes.csv"
     output:
-        featureplot = REPORT_DIR_PLOTS / "feature_plot.png"
+        featureplot = REPORT_DIR_PLOTS / "feature_plot_{reduction2}.png"
     log:
-        LOGDIR / "plot_features_dim" / "log.txt"
+        LOGDIR / "plot_features_dim" / "log_{reduction2}.txt"
     script:
         "../scripts/plot_features_dim.R"
 

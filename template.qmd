@@ -22,7 +22,7 @@ params:
   violin_counts: ""
   violin_features: ""
   HGVs_plot: ""
-  feature_plot: ""
+  feature_plot_path: ""
   de_summary: ""
   gsea_table: ""
   annotated_genes: ""
@@ -139,8 +139,3 @@ Samples in the X-axis are ordered chronologically, from more ancient to newer.](
 
 ### Features plot
 
-The lineage admixture for each sample has been estimated
-using (@fig-feature_plot).
-
-![Estimated lineage admixture of each sample.
-Samples in the X-axis are ordered chronologically, from more ancient to newer.](`r params$feature_plot`){#fig-feature_plot}

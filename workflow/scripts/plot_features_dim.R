@@ -21,6 +21,7 @@ log_info("Generating FeaturePlot")
 p = FeaturePlot(
   combined2,
   features = genes,
+  reduction = snakemake@params$reduction,
   ncol = 4,
 )
 
