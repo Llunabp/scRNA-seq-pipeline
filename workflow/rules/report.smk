@@ -25,7 +25,7 @@ rule report:
         qmd = "template.qmd",
         dim_plots = expand(REPORT_DIR_PLOTS / "{reduction}" / "dim_plot_{legend}.png", reduction=config["DIM_REPRESENTATION"]["REDUCTION_METHOD"], legend=config["DIM_REPRESENTATION"]["LEGEND"]),
         heatmap = REPORT_DIR_PLOTS / "heatmap.png",
-        feature_plot = expand(REPORT_DIR_PLOTS / "feature_plot.png", reduction2=config["DIM_REPRESENTATION"]["REDUCTION_METHOD"]),
+        feature_plot = expand(REPORT_DIR_PLOTS / "feature_plot_{reduction2}.png", reduction2=config["DIM_REPRESENTATION"]["REDUCTION_METHOD"]),
         de_summary = REPORT_DIR_TABLES / "DE_summary.csv",
         gsea_table = REPORT_DIR_TABLES / "GSEA_results.csv",
         annotated_genes = REPORT_DIR_TABLES / "annotated_genes.csv",
