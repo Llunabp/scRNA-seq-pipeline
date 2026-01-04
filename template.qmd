@@ -65,7 +65,14 @@ and genes expressed in at least a minimum number of cells (`r params$sc_min_cell
 ```{r tbl-summary, echo = F,message = F, warning = F}
 #| tbl-cap: Distribution of cells across samples and total cell counts after quality filtering.
 
-table <- read.csv(params$cell_counts)
+table <- read.csv(params$cell_counts) %>%
+  rename(
+    "Sample" = sample,
+    "N cells" = n_cells,
+    "Group" = group,
+    "% Total" = percent_total,
+    "Total cells" = total_cells  
+  ) 
 
 DT::datatable(table)
 ```
@@ -79,11 +86,11 @@ method with a scale factor of `r params$sc_scale_factor`, enabling comparison ac
 ## N. Counts
 
 ![Violin plot showing the distribution of counts after normalization and scale dara. 
-The plot highlights variability and potential outliers across cells.](`r params$violin_counts`){#fig-violin_counts, width=60%}
+The plot highlights variability and potential outliers across cells.](`r params$violin_counts`){#fig-violin_counts width=60%}
 
 ## N. Features
 ![Violin plot showing the distribution of the number of detected features (genes) after normalization and scale data. 
-This visualization facilitates the assessment of gene detection variability across cells.](`r params$violin_features`){#fig-violin_features, width=60%}
+This visualization facilitates the assessment of gene detection variability across cells.](`r params$violin_features`){#fig-violin_features width=60%}
 :::
 
 
@@ -93,7 +100,7 @@ Highly Variable Genes (HVGs) capture the majority of the variability present in 
  to exhibit lower variability and are retained in the background, as illustrated in @fig-HGVs_plot.
  
 ![Identification of highly variable genes (HVGs) highlighted in red, while the remaining genes are shown in black and
- represent features with lower variability.](`r params$HGVs_plot`){#fig-HGVs_plot, width=60%}
+ represent features with lower variability.](`r params$HGVs_plot`){#fig-HGVs_plot width=60%}
 
 
 ## Clustering using Principal component analysis (PCA)
@@ -128,7 +135,7 @@ These components were then used to compute a shared nearest neighbor (SNN) graph
 of transcriptionally distinct cell populations.
 
 ![Elbow plot showing the standard deviation of each principal component (PC) obtained from PCA. The elbow point indicates the number of PCs retained for downstream analyses, 
-beyond which additional components contribute marginally to explaining variance.](`r params$elbowplot`){#fig-elbowplot, width=60%}
+beyond which additional components contribute marginally to explaining variance.](`r params$elbowplot`){#fig-elbowplot width=60%}
 
 Marker genes were identified for each cluster to characterize and assign cell identities. Top genes were selected by  
 using the **_`r params$markers_test`_** test, applying a minimum log fold-change threshold of `r params$markers_logfc_threshold` and 
@@ -176,7 +183,7 @@ b_vals <- unlist(strsplit(params$legends,";"))
 
 for (a in a_vals) {
 
-  cat("## Reduction:", a, "\n\n")
+  cat("### Reduction:", a, "\n\n")
   cat("::: {.panel-tabset}\n\n")
 
   for (b in b_vals) {
@@ -193,7 +200,7 @@ for (a in a_vals) {
   }
   cat(":::\n\n")
 
-  cat("### Features\n\n")
+  cat("### Features:", a, "\n\n")
   path2 <- params$feature_plot_path
   path2 <- gsub("\\(reduction\\)", a, path2)
   cat("![Feature plot showing the expression of selected marker genes projected onto the low-dimensional embedding. Color intensity reflects gene expression levels.](", path2, "){width=80%}\n\n")
@@ -240,7 +247,10 @@ threshold of `r params$gsea_pval` and a false discovery rate (FDR) cutoff of `r 
 
 table <- read.csv(params$gsea_table)  %>%
   mutate(across(where(is.numeric), round, 2)) %>%
-  select(!cluster)
+  select(!cluster) %>% 
+  rename(
+    "Pass filter" = passes_filter
+  ) 
 
 DT::datatable(table, rownames = FALSE)
 ```
