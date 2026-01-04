@@ -48,6 +48,8 @@ params:
   sc_normalization_method: ""
   sc_selection_method: ""
   sc_nfeatures: 0
+  controls_geo: ""
+  cases_geo: ""
 output-file: report.html
 ---
 
@@ -56,6 +58,10 @@ output-file: report.html
 library(DT)
 library(tidyverse)
 ```
+
+GEO accesions for compute this analysis scRNA-seq are:
+- Cases: `r params$cases_geo`
+- Controls: `r params$controls_geo`
 
 ## Study inspection
 The distribution of cells across samples is shown in @tbl-summary. It also reports the total number of cells. 
