@@ -97,6 +97,29 @@ anchors <- FindIntegrationAnchors(
 )
 combined <- IntegrateData(anchors)
 
+log_info("Get number of cells")
+total_cells <- ncol(combined)
+
+a = data.frame(table(combined@meta.data$orig.ident))
+colnames(a) = c("orig.ident","n_cell")
+cell_summary = left_join(a,unique(combined@meta.data[,c("orig.ident","group")]))
+
+cell_summary <- cell_summary %>%
+  mutate(
+    percent_total = round(n_cell / total_cells * 100, 2),
+    total_cells = total_cells
+  ) %>%
+  rename(
+    sample = orig.ident
+  )
+
+log_info("Save cell summary")
+write.csv(
+  cell_summary,
+  snakemake@output[["cell_counts"]],
+  row.names = FALSE
+)
+
 log_info("Saving RDS file")
 saveRDS(combined, snakemake@output$rds)
 log_info("Integration finished successfully")

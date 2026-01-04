@@ -21,7 +21,8 @@ log_info("Generating FeaturePlot")
 p = FeaturePlot(
   combined2,
   features = genes,
-  ncol = 6,
+  reduction = snakemake@params$reduction,
+  ncol = 4,
 )
 
 log_info("Save plot")
@@ -29,5 +30,5 @@ ggsave(
   filename = snakemake@output[["featureplot"]],
   plot = p,
   width = 16,
-  height = 12
+  height = length(genes) / 4 * 4,
 )

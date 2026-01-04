@@ -8,7 +8,7 @@ READ_DATA:
 PCA:
   N_PCS: 50
 CLUSTERING:
-  RESOLUTION: 0.35
+  RESOLUTION: 0.4
   ALGORITHM: 3
 UMAP:
   N_NEIGHBORS: 30
@@ -16,20 +16,25 @@ UMAP:
 MARKERS:
   LOGFC_THRESHOLD: 0.25
   MIN_PCT: 0.25
+  TEST: "wilcox"
 SEED: 123
 DIM_REPRESENTATION: 
-  REDUCTION_METHOD: 
-    - "umap"
-    - "tsne"
+  REDUCTION_METHOD:
+    - "tsne" 
+    - "umap" 
   LEGEND:
     - "long_name"
     - "group"
     - "orig.ident"
 HEATMAP:
   N_MARKERS: 5
+HGV:
+  N_MARKERS: 10
 GSEA:
   MIN_GENES: 10
-  PVALUE: 1
+  PVALUE: 0.05
+  FDR: 0.1
+  P_ADJ_METHOD: "BH"
 DE:
   FDR: 0.05
   FC: 0.4

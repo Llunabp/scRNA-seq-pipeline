@@ -5,9 +5,12 @@ rule report:
         legends = LEGENDS,
         reductions = REDUCTIONS,
         dim_plot_path = FILE_DIM,
+        feature_plot_path = FILE_FEATURE,
         case = config["GEO_ACCESION"]["Cases"],
         control = config["GEO_ACCESION"]["Controls"],
         gsea_pval = config["GSEA"]["PVALUE"],
+        gsea_fdr = config["GSEA"]["FDR"],
+        gsea_padj_method = config["GSEA"]["P_ADJ_METHOD"],
         gsea_mingenes = config["GSEA"]["MIN_GENES"],
         de_fdr = config["DE"]["FDR"],
         de_fc = config["DE"]["FC"],
@@ -17,15 +20,26 @@ rule report:
         sc_normalization_method = config["READ_DATA"]["NORMALIZATION_METHOD"],
         sc_selection_method = config["READ_DATA"]["SELECTION_METHOD"],
         sc_nfeatures = config["READ_DATA"]["NFEATURES"],
+        resolution = config["CLUSTERING"]["RESOLUTION"],
+        algorithm = config["CLUSTERING"]["ALGORITHM"],
+        markers_logfc_threshold = config["MARKERS"]["LOGFC_THRESHOLD"],
+        markers_min_pct = config["MARKERS"]["MIN_PCT"],
+        markers_test = config["MARKERS"]["TEST"],
+        markers_heatmap = config["HEATMAP"]["N_MARKERS"]
 
     input:
         qmd = "template.qmd",
         dim_plots = expand(REPORT_DIR_PLOTS / "{reduction}" / "dim_plot_{legend}.png", reduction=config["DIM_REPRESENTATION"]["REDUCTION_METHOD"], legend=config["DIM_REPRESENTATION"]["LEGEND"]),
         heatmap = REPORT_DIR_PLOTS / "heatmap.png",
-        feature_plot = REPORT_DIR_PLOTS / "feature_plot.png",
+        feature_plot = expand(REPORT_DIR_PLOTS / "feature_plot_{reduction2}.png", reduction2=config["DIM_REPRESENTATION"]["REDUCTION_METHOD"]),
         de_summary = REPORT_DIR_TABLES / "DE_summary.csv",
         gsea_table = REPORT_DIR_TABLES / "GSEA_results.csv",
         annotated_genes = REPORT_DIR_TABLES / "annotated_genes.csv",
+        cell_counts = REPORT_DIR_TABLES / "cell_counts.csv",
+        violin_counts = REPORT_DIR_PLOTS / "violin_counts.png",
+        violin_features = REPORT_DIR_PLOTS / "violin_features.png",
+        HGVs_plot = REPORT_DIR_PLOTS / "HGVs_plot.png",
+        elbowplot = REPORT_DIR_PLOTS / "elbow_plot.png",
     output:
         html = OUTDIR / "report" / "report.html"
     log:
@@ -37,14 +51,27 @@ rule report:
                 "input = '{input.qmd}', "
                 "execute_params=list("
                     "heatmap='{input.heatmap}', "
-                    "feature_plot='{input.feature_plot}', "
+                    "feature_plot_path='{params.feature_plot_path}', "
                     "de_summary='{input.de_summary}', "
                     "gsea_table='{input.gsea_table}', "
                     "annotated_genes='{input.annotated_genes}', "
+                    "cell_counts='{input.cell_counts}', "
+                    "violin_features='{input.violin_features}', "
+                    "violin_counts='{input.violin_counts}', "
+                    "HGVs_plot='{input.HGVs_plot}', "
+                    "elbowplot='{input.elbowplot}', "
                     "legends='{params.legends}', "
                     "reductions='{params.reductions}', "
+                    "resolution='{params.resolution}', "
+                    "algorithm='{params.algorithm}', "
+                    "markers_logfc_threshold='{params.markers_logfc_threshold}', "
+                    "markers_min_pct='{params.markers_min_pct}', "
+                    "markers_test='{params.markers_test}', "
+                    "markers_heatmap='{params.markers_heatmap}', "
                     "dim_plot_path='{params.dim_plot_path}', "
                     "gsea_pval='{params.gsea_pval}', "
+                    "gsea_fdr='{params.gsea_fdr}', "
+                    "gsea_padj_method='{params.gsea_padj_method}', "
                     "gsea_mingenes='{params.gsea_mingenes}', "
                     "de_fdr='{params.de_fdr}', "
                     "de_fc='{params.de_fc}', "

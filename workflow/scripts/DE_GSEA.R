@@ -13,6 +13,7 @@ log <- file(snakemake@log[[1]], open = "wt")
 sink(log, type = "message")
 sink(log, type = "output")
 set.seed(snakemake@params[["seed"]])
+
 run_gsea_cluster <- function(
     de_table,        
     cluster_name,    
@@ -36,8 +37,10 @@ run_gsea_cluster <- function(
         term = "Signature_genes",
         gene = gene_set
       ),
-      pvalueCutoff = snakemake@params[["pvalue_cutoff"]],
-      verbose = FALSE
+      pvalueCutoff = 1,
+      verbose = FALSE,
+      pAdjustMethod = snakemake@params[["GSEA_padj_method"]],
+      seed = snakemake@params[["seed"]]
     ),
     error = function(e) NULL
   )
@@ -54,9 +57,11 @@ run_gsea_cluster <- function(
   )
 }
 
-
+log_info("Read RDS")
 combined2 = readRDS(snakemake@input$rds)
 clusters <- levels(Idents(combined2))
+
+log_info("Define DE final table")
 a = combined2@meta.data %>% select(seurat_clusters,long_name) %>% unique() %>% 
   rename(cluster = seurat_clusters,
          Cluster = long_name)
@@ -64,15 +69,29 @@ a = combined2@meta.data %>% select(seurat_clusters,long_name) %>% unique() %>%
 DE_summary = data.frame(cluster = clusters)
 DE_summary = left_join(DE_summary,a, by = "cluster")
 
+log_info("Calculate DE in each cluster")
 DE_by_cluster <- list()
 for (cl in clusters) {
   log_info(paste0("Cluster ", cl))
   cells_cl <- WhichCells(combined2, idents = cl)
   meta_cl <- combined2@meta.data[cells_cl, ]
   
-  # comprobar que hay ambos grupos
+  # check that both groups exist
   if (length(unique(meta_cl$group)) < 2) {
     log_info("  -> Skipping cluster, only one group present")
+    next
+  }
+
+  # check at least 3 cells in each group
+  cell_counts_group <- table(meta_cl$group)
+  if (any(cell_counts_group < 3)) {
+    log_info(
+      paste0(
+        "  -> Skipping cluster ", cl,
+        ", insufficient cells per group: ",
+        paste(names(cell_counts_group), cell_counts_group, collapse = ", ")
+      )
+    )
     next
   }
   
@@ -82,7 +101,7 @@ for (cl in clusters) {
     ident.2 = "control",
     group.by = "group",
     subset.ident = cl,
-    test.use = "wilcox",
+    test.use = snakemake@params[["test_use"]],
     logfc.threshold = snakemake@params[["logfc_threshold"]],
     min.pct = snakemake@params[["min_pct"]]
   )
@@ -108,7 +127,7 @@ DE_all_sum <- DE_all %>%
 
 DE_summary = left_join(DE_summary,DE_all_sum, by = "cluster")
 
-
+log_info("Extract cell count in each cluster")
 cell_counts <- combined2@meta.data %>%
   count(orig.ident, seurat_clusters, group)
 
@@ -171,15 +190,16 @@ DE_summary = left_join(DE_summary, pvals_cluster, by = "cluster")
 
 DE_summary = DE_summary %>% select(!cluster)
 
+log_info("Savr DE summary")
 write.csv(DE_summary, snakemake@output[["de_summary"]], row.names = FALSE)
 
-
+log_info("Read gene set")
 DE_genes <- scan(
   snakemake@input[["gene_set"]],
   what = "character"
 )
 
-
+log_info("Inicializate GSEA")
 GSEA_list <- list()
 
 for (cl in names(DE_by_cluster)) {
@@ -200,6 +220,12 @@ for (cl in names(DE_by_cluster)) {
 GSEA_table = data.frame(cluster = clusters)
 GSEA_table = left_join(GSEA_table, a, by = "cluster")
 
-GSEA_table <- left_join(GSEA_table,bind_rows(GSEA_list))
+GSEA_table = left_join(GSEA_table,bind_rows(GSEA_list))
+GSEA_table = GSEA_table %>%
+  mutate(
+    passes_filter = ifelse(P.value < snakemake@params[["pvalue_cutoff"]] & FDR < snakemake@params[["FDR_cutoff"]], "Yes", "No")
+  )
+
+log_info("Save GSEA summary")
 
 write.csv(GSEA_table, snakemake@output[["gsea_table"]], row.names = FALSE)

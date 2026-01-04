@@ -33,12 +33,41 @@ rule plot_heatmap:
 rule plot_features_dim:
     conda:
         "../envs/r_env.yaml"
+    params: 
+        reduction = lambda wildcards: wildcards.reduction2,
     input:
         rds = OUTDIR / "combined_reduction.rds",
         genes = OUTDIR / "genes.csv"
     output:
-        featureplot = REPORT_DIR_PLOTS / "feature_plot.png"
+        featureplot = REPORT_DIR_PLOTS / "feature_plot_{reduction2}.png"
     log:
-        LOGDIR / "plot_features_dim" / "log.txt"
+        LOGDIR / "plot_features_dim" / "log_{reduction2}.txt"
     script:
         "../scripts/plot_features_dim.R"
+
+rule plot_HGVc:
+    conda:
+        "../envs/r_env.yaml"
+    params:
+        top_features = config["HGV"]["N_MARKERS"]
+    input:
+        rds = OUTDIR / "combined.rds",
+    output:
+        plot = REPORT_DIR_PLOTS / "HGVs_plot.png",
+    log:
+        LOGDIR / "plot_HGVs" / "log.txt"
+    script:
+        "../scripts/plot_HGVs.R"
+
+rule plot_violin:
+    conda:
+        "../envs/r_env.yaml"
+    input:
+        rds = OUTDIR / "combined.rds",
+    output:
+        plot_feature = REPORT_DIR_PLOTS / "violin_features.png",
+        plot_count = REPORT_DIR_PLOTS / "violin_counts.png",
+    log:
+        LOGDIR / "plot_violin" / "log.txt"
+    script:
+        "../scripts/plot_violin.R"

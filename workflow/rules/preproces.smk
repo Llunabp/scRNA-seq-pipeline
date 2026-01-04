@@ -19,7 +19,8 @@ rule load_counts:
         controls_barcodes = [config["CONTROLS"][s]["barcodes"] for s in config["CONTROLS"]],
 
     output:
-        rds = OUTDIR / "combined.rds"
+        rds = OUTDIR / "combined.rds",
+        cell_counts = REPORT_DIR_TABLES / "cell_counts.csv"
     log:
         LOGDIR / "load_counts" / "log.txt"
     script:
@@ -35,6 +36,7 @@ rule reduce_data:
         n_neighbors = config["UMAP"]["N_NEIGHBORS"],
         min_dist = config["UMAP"]["MIN_DIST"],
         min_pct = config["MARKERS"]["MIN_PCT"],
+        test_use = config["MARKERS"]["TEST"],
         logfc_threshold = config["MARKERS"]["LOGFC_THRESHOLD"],
         seed = config["SEED"],
     input:
