@@ -68,7 +68,7 @@ and genes expressed in at least a minimum number of cells (`r params$sc_min_cell
 table <- read.csv(params$cell_counts) %>%
   rename(
     "Sample" = sample,
-    "N cells" = n_cells,
+    "N cells" = n_cell,
     "Group" = group,
     "% Total" = percent_total,
     "Total cells" = total_cells  
