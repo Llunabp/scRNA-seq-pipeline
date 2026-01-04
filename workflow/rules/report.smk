@@ -52,6 +52,8 @@ rule report:
                 "execute_params=list("
                     "heatmap='{input.heatmap}', "
                     "feature_plot_path='{params.feature_plot_path}', "
+                    "controls_geo='{params.control}', "
+                    "cases_geo='{params.case}', "
                     "de_summary='{input.de_summary}', "
                     "gsea_table='{input.gsea_table}', "
                     "annotated_genes='{input.annotated_genes}', "
