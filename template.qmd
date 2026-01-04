@@ -22,12 +22,19 @@ params:
   violin_counts: ""
   violin_features: ""
   HGVs_plot: ""
+  elbowplot: ""
   feature_plot_path: ""
   de_summary: ""
   gsea_table: ""
   annotated_genes: ""
   legends: ""
   reductions: ""
+  resolution: 0.0
+  algorithm: 0
+  markers_logfc_threshold: 0.0
+  markers_min_pct: 0.0
+  markers_test: ""
+  markers_heatmap: 0
   dim_plot_path: ""
   gsea_pval: 0.0
   gsea_fdr: 0.0
@@ -50,20 +57,89 @@ library(DT)
 library(tidyverse)
 ```
 
-## Summary table
+## Study inspection
+The distribution of cells across samples is shown in Table @tbl-summary. It also reports the total number of cells. 
+Counts correspond to filtered data, retaining cells with a minimum number of genes per cell (`r params$sc_min_features`) 
+and genes expressed in at least a minimum number of cells (`r params$sc_min_cells`).
 
 ```{r tbl-summary, echo = F,message = F, warning = F}
-#| tbl-cap: Target dataset summary
+#| tbl-cap: Distribution of cells across samples and total cell counts after quality filtering.
 
 table <- read.csv(params$cell_counts)
 
 DT::datatable(table)
 ```
 
-## Annotated Markers 
+Violin plots allow the visualization of the distribution of counts (Figure @fig-violin_counts) and the number of detected 
+features or genes (Figure @fig-violin_features) between cases and controls. These plots facilitate the identification of variability, skewness, and 
+potential outliers across cells. The distributions shown correspond to data normalized using the **_`r params$sc_normalization_method`_** 
+method with a scale factor of `r params$sc_scale_factor`, enabling comparison across cells by correcting for differences in sequencing depth.
+
+::: {.panel-tabset}
+## N. Counts
+
+![Violin plot showing the distribution of counts after normalization and scale dara. 
+The plot highlights variability and potential outliers across cells.](`r params$violin_counts`){#fig-violin_counts}
+
+## N. Features
+![Violin plot showing the distribution of the number of detected features (genes) after normalization and scale data. 
+This visualization facilitates the assessment of gene detection variability across cells.](`r params$violin_features`){#fig-violin_features}
+:::
+
+
+Highly Variable Genes (HVGs) capture the majority of the variability present in the data and are therefore used for downstream analyses.
+ These genes are selected to emphasize biologically meaningful variation while reducing technical noise. The top `r params$sc_nfeatures` 
+ features are identified using the **_`r params$sc_selection_method`_** method to represent the HVGs. The remaining genes are expected 
+ to exhibit lower variability and are retained in the background, as illustrated in Figure @fig-HGVs_plot.
+ 
+![Identification of highly variable genes (HVGs) highlighted in red, while the remaining genes are shown in black and
+ represent features with lower variability.](`r params$HGVs_plot`){#fig-HGVs_plot}
+
+
+## Clustering using Principal component analysis (PCA)
+
+
+```{r get_algorithm, include = F}
+n = params$algorithm
+algorithm_name = ""
+
+if (n == 1) {
+  algorithm_name = "Louvain algorithm"
+} else if (n == 2) {
+  algorithm_name = "Louvain algorithm with multilevel refinement"
+} else if (n == 3) {
+  algorithm_name = "SLM algorithm"
+} else if (n == 4) {
+  algorithm_name = "Leiden algorithm"
+} else {
+  algorithm_name = "Unknown algorithm"
+}
+
+```
+
+
+Principal component analysis (PCA) was performed on scaled data to reduce dimensionality and 
+capture the main sources of variation. The optimal number of PCs used for downstream analyses was determined using an elbow plot, 
+which identifies the point at which the marginal gain in explained variance decreases substantially (Figure @fig-elbowplot).
+
+Based on this criterion, the first principal components up to the elbow point were selected for neighborhood graph construction. 
+These components were then used to compute a shared nearest neighbor (SNN) graph, followed by graph-based clustering using the 
+**_`r algorithm_name`_** (algorithm = `r params$algorithm`) with a resolution of `r params$sc_resolution`, allowing identification 
+of transcriptionally distinct cell populations.
+
+**Figure @fig-elbowplot.** 
+![Elbow plot showing the standard deviation of each principal component (PC) obtained from PCA. The elbow point indicates the number of PCs retained for downstream analyses, 
+beyond which additional components contribute marginally to explaining variance.](`r params$elbowplot`){#fig-elbowplot}
+
+Marker genes were identified for each cluster to characterize and assign cell identities. Top genes were selected by  
+using the **_`r params$markers_test`_** test, applying a minimum log fold-change threshold of `r params$markers_logfc_threshold` and 
+requiring genes to be expressed in at least `r params$markers_min_pct` of cells within a cluster. The top marker genes annotated regards cell identities 
+for each cluster are reported in Table @tbl-genes.
+
+**Table @tbl-genes.** Top marker genes identified for each cluster using differential expression analysis. Marker selection was performed with the Wilcoxon rank-sum test, applying a minimum log fold-change threshold of `r params$sc_logfc_threshold` and requiring expression in at least `r params$sc_min_pct` of cells per cluster. These genes were used to represent cluster-specific transcriptional profiles and support cell identity annotation.
 
 ```{r tbl-genes, echo = F,message = F, warning = F}
-#| tbl-cap: Target dataset summary
+#| tbl-cap: Top marker genes identified for each cluster. These genes were used to represent cluster-specific transcriptional profiles and support cell identity annotation.
 
 table <- read.csv(params$annotated_genes) %>%
   rename(
@@ -75,30 +151,27 @@ table <- read.csv(params$annotated_genes) %>%
 DT::datatable(table, rownames = FALSE)
 ```
 
-```{r DE, echo = F,message = F,warning = F}
-#| tbl-cap: Target dataset summary
+### Heatmap
 
-table <- read.csv(params$de_summary) %>%
-  rename(
-    "% Case cells" = Case_._cells,
-    "% Control cells" = Control_._cells,
-    "P.value (t.test)" = P.value..t.test.,
-    "P.value (wilcox)" = P.value..wilcox.
-    
-  ) 
+To inspect the marker genes associated with each cluster, we visualized the expression of the top `r params$markers_heatmap` marker genes
+ across clusters using a heatmap (Figure @fig-heatmap).
 
-DT::datatable(table, rownames = FALSE)
-```
+**Figure @fig-heatmap.** Heatmap showing the expression patterns of the top `r params$markers_heatmap` marker genes across clusters. Lighter colors indicate higher gene expression levels, while darker colors represent lower expression, facilitating comparison of cluster-specific transcriptional profiles.
 
-```{r GSEA, echo = F,message = F,warning = F}
-#| tbl-cap: Target dataset summary
+![Heatmap showing the expression patterns of the top marker genes across clusters. Lighter colors indicate higher gene expression levels, 
+while darker colors represent lower expression, facilitating comparison of cluster-specific transcriptional profiles.](`r params$heatmap`){#fig-heatmap}
 
-table <- read.csv(params$gsea_table)  %>%
-  mutate(across(where(is.numeric), round, 2)) %>%
-  select(!cluster)
 
-DT::datatable(table, rownames = FALSE)
-```
+## Dimensionality reduction
+
+To explore the global structure of the data and assess cluster separation, dimensionality reduction techniques were applied and
+ visualized using two-dimensional embeddings. For each reduction method, cells are displayed according to different metadata 
+ annotations, allowing comparison of cell distributions and evaluation of potential batch effects or biological patterns.
+
+In addition, feature plots are shown for each reduction, illustrating the expression of selected marker genes across the 
+low-dimensional space. These visualizations facilitate the interpretation of cluster identities and the relationship between 
+transcriptional programs and the inferred cell populations.
+
 
 ```{r dim_plots, results="asis", echo = F}
 
@@ -120,22 +193,58 @@ for (a in a_vals) {
 
     
 
-    cat("![path](", path, "){width=80%}\n\n")
+    cat("![Two-dimensional embedding of cells obtained using the indicated dimensionality reduction method. Cells are colored according to the specified metadata annotation.](", path, "){width=80%}\n\n")
   }
-
   cat(":::\n\n")
+
+  ### Features 
+  path2 <- params$feature_plot_path
+  path2 <- gsub("\\(reduction\\)", a, path2)
+  cat("![Feature plot showing the expression of selected marker genes projected onto the low-dimensional embedding. Color intensity reflects gene expression levels.](", path2, "){width=80%}\n\n")
+  
 }
 ```
 
-## Plots
 
-### Heatmap
+## Differencial expression of genes
 
-The lineage admixture for each sample has been estimated
-using [Freyja](https://github.com/andersen-lab/Freyja) (@fig-heatmap).
+Differencial expression in genes for each cluster was summarized @tbl-de. Differences in cell distribution 
+between case and control samples were also evaluated at the cluster 
+level to identify changes in cell population abundance associated with the condition of interest and compare to change 
+regards genes expression. For each cluster, the proportion of cells per sample was calculated and summarized as mean 
+ percentage ± standard deviation for case and control groups. Statistical comparisons between groups were performed using 
+ both t-test and Wilcoxon rank-sum test on cell percentage distributions. In addition, the log2 fold change of cell proportions between 
+ case and control groups was computed to quantify the direction and magnitude of abundance differences. 
 
-![Estimated lineage admixture of each sample.
-Samples in the X-axis are ordered chronologically, from more ancient to newer.](`r params$heatmap`){#fig-heatmap}
+```{r tbl-de, echo = F,message = F,warning = F}
+#| tbl-cap: Differential expression and summary of cell distribution differences between case and control samples across clusters. 
 
-### Features plot
+table <- read.csv(params$de_summary) %>%
+  rename(
+    "% Case cells" = Case_._cells,
+    "% Control cells" = Control_._cells,
+    "P.value (t.test)" = P.value..t.test.,
+    "P.value (wilcox)" = P.value..wilcox.   
+  ) 
 
+DT::datatable(table, rownames = FALSE)
+```
+
+## Gene Set Enrichment Analysis (GSEA)
+
+Gene Set Enrichment Analysis (GSEA) was performed for each cluster to evaluate whether a 
+predefined gene signature was significantly enriched among differentially expressed genes. 
+Only clusters with at least `r params$gsea_mingenes` differentially expressed genes were 
+considered for GSEA. Filters was evaluated using a nominal p-value 
+threshold of `r params$gsea_pval` and a false discovery rate (FDR) cutoff of `r params$gsea_fdr`,
+ with p-values adjusted according to the **_`r params$gsea_padj_method`_** method (Table @tbl-gsea).
+
+```{r GSEA, echo = F,message = F,warning = F}
+#| tbl-cap: Gene Set Enrichment Analysis (GSEA) results for each cluster based on a predefined gene signature.
+
+table <- read.csv(params$gsea_table)  %>%
+  mutate(across(where(is.numeric), round, 2)) %>%
+  select(!cluster)
+
+DT::datatable(table, rownames = FALSE)
+```

@@ -20,6 +20,12 @@ rule report:
         sc_normalization_method = config["READ_DATA"]["NORMALIZATION_METHOD"],
         sc_selection_method = config["READ_DATA"]["SELECTION_METHOD"],
         sc_nfeatures = config["READ_DATA"]["NFEATURES"],
+        resolution = config["CLUSTERING"]["RESOLUTION"],
+        algorithm = config["CLUSTERING"]["ALGORITHM"],
+        markers_logfc_threshold = config["MARKERS"]["LOGFC_THRESHOLD"],
+        markers_min_pct = config["MARKERS"]["MIN_PCT"],
+        markers_test = config["MARKERS"]["TEST"],
+        markers_heatmap = config["HEATMAP"]["N_MARKERS"]
 
     input:
         qmd = "template.qmd",
@@ -33,6 +39,7 @@ rule report:
         violin_counts = REPORT_DIR_PLOTS / "violin_counts.png",
         violin_features = REPORT_DIR_PLOTS / "violin_features.png",
         HGVs_plot = REPORT_DIR_PLOTS / "HGVs_plot.png",
+        elbowplot = REPORT_DIR_PLOTS / "elbow_plot.png",
     output:
         html = OUTDIR / "report" / "report.html"
     log:
@@ -52,8 +59,15 @@ rule report:
                     "violin_features='{input.violin_features}', "
                     "violin_counts='{input.violin_counts}', "
                     "HGVs_plot='{input.HGVs_plot}', "
+                    "elbowplot='{input.elbowplot}', "
                     "legends='{params.legends}', "
                     "reductions='{params.reductions}', "
+                    "resolution='{params.resolution}', "
+                    "algorithm='{params.algorithm}', "
+                    "markers_logfc_threshold='{params.markers_logfc_threshold}', "
+                    "markers_min_pct='{params.markers_min_pct}', "
+                    "markers_test='{params.markers_test}', "
+                    "markers_heatmap='{params.markers_heatmap}', "
                     "dim_plot_path='{params.dim_plot_path}', "
                     "gsea_pval='{params.gsea_pval}', "
                     "gsea_fdr='{params.gsea_fdr}', "
